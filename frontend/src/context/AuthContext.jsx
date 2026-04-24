@@ -3,9 +3,9 @@ import axios from "axios";
 
 const AuthContext = createContext(null);
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : "/api",
-});
+const BASE_URL = import.meta.env.VITE_API_URL || "https://classroll-attendance-app.onrender.com";
+
+const api = axios.create({ baseURL: `${BASE_URL}/api` });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("cr_token");
