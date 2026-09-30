@@ -41,7 +41,9 @@ router.get("/summary", async (req, res) => {
     }
 
     // Attach student info
-   const students = await Student.find({
+  
+const studentIds = Object.keys(statsMap);
+const students = await Student.find({
   _id: { $in: studentIds },
   createdBy: req.user._id,
 }).select("name rollNumber class section");
