@@ -13,7 +13,10 @@ const signToken = (id) =>
 // @POST /api/auth/register
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role, institution } = req.body;
+    // `role` is deliberately NOT read from the request body. Every new account
+    // is a teacher; only an existing admin (or scripts/make-admin.js) can
+    // grant the admin role.
+    const { name, email, password, institution } = req.body;
 
     if (!name || !email || !password) {
       return res
@@ -28,7 +31,7 @@ router.post("/register", async (req, res) => {
         .json({ error: "An account with this email already exists." });
     }
 
-    const user = await User.create({ name, email, password, role, institution });
+    const user = await User.create({ name, email, password, institution });
     const token = signToken(user._id);
 
     res.status(201).json({ token, user });

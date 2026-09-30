@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const studentRoutes = require("./routes/students");
 const attendanceRoutes = require("./routes/attendance");
 const reportRoutes = require("./routes/reports");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

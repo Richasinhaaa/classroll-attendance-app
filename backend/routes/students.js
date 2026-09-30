@@ -5,6 +5,19 @@ const { protect } = require("../middleware/auth");
 const router = express.Router();
 router.use(protect);
 
+// Only these fields may come from the client. Ownership (createdBy), _id and
+// isActive are always controlled by the server, so a request body can't move
+// a student into another teacher's account or un-delete it.
+const EDITABLE_FIELDS = [
+  "name", "rollNumber", "email", "phone", "class", "section",
+  "subject", "guardian", "guardianPhone", "photo",
+];
+
+const pickEditable = (body = {}) =>
+  Object.fromEntries(
+    EDITABLE_FIELDS.filter((key) => body[key] !== undefined).map((key) => [key, body[key]])
+  );
+
 // @GET /api/students — get all students for this teacher
 router.get("/", async (req, res) => {
   try {
@@ -38,7 +51,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const student = await Student.create({
-      ...req.body,
+      ...pickEditable(req.body),
       createdBy: req.user._id,
     });
     res.status(201).json({ student });
@@ -61,7 +74,7 @@ router.post("/bulk", async (req, res) => {
     }
 
     const toInsert = students.map((s) => ({
-      ...s,
+      ...pickEditable(s),
       createdBy: req.user._id,
     }));
 
@@ -104,7 +117,7 @@ router.put("/:id", async (req, res) => {
   try {
     const student = await Student.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user._id },
-      req.body,
+      pickEditable(req.body),
       { new: true, runValidators: true }
     );
     if (!student) return res.status(404).json({ error: "Student not found." });
