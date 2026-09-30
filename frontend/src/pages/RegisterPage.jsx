@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", institution: "", role: "teacher" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", institution: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -63,13 +63,6 @@ export default function RegisterPage() {
               <div className="col-span-2">
                 <label className="block text-xs font-medium text-ink-700 mb-1.5">Institution (optional)</label>
                 <input className="input" placeholder="DPS, Delhi" value={form.institution} onChange={set("institution")} />
-              </div>
-              <div className="col-span-2">
-                <label className="block text-xs font-medium text-ink-700 mb-1.5">Role</label>
-                <select className="input" value={form.role} onChange={set("role")}>
-                  <option value="teacher">Teacher</option>
-                  <option value="admin">Admin</option>
-                </select>
               </div>
             </div>
 

@@ -8,6 +8,7 @@ import StudentsPage from "./pages/StudentsPage";
 import TakeAttendancePage from "./pages/TakeAttendancePage";
 import AttendanceHistoryPage from "./pages/AttendanceHistoryPage";
 import ReportsPage from "./pages/ReportsPage";
+import AdminPage from "./pages/AdminPage";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -20,6 +21,12 @@ function PrivateRoute({ children }) {
     </div>
   );
   return user ? children : <Navigate to="/login" replace />;
+}
+
+// UI guard only; the real check is the adminOnly middleware on /api/admin.
+function AdminRoute({ children }) {
+  const { user } = useAuth();
+  return user?.role === "admin" ? children : <Navigate to="/dashboard" replace />;
 }
 
 function PublicRoute({ children }) {
@@ -41,6 +48,7 @@ export default function App() {
           <Route path="attendance"   element={<TakeAttendancePage />} />
           <Route path="history"      element={<AttendanceHistoryPage />} />
           <Route path="reports"      element={<ReportsPage />} />
+          <Route path="admin"        element={<AdminRoute><AdminPage /></AdminRoute>} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

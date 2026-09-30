@@ -2,7 +2,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard, Users, ClipboardCheck,
-  History, BarChart3, LogOut, GraduationCap, Menu, X
+  History, BarChart3, LogOut, GraduationCap, Menu, X, ShieldCheck
 } from "lucide-react";
 import { useState } from "react";
 
@@ -14,12 +14,15 @@ const navItems = [
   { to: "/reports",    icon: BarChart3,        label: "Reports" },
 ];
 
+const adminNavItem = { to: "/admin", icon: ShieldCheck, label: "Admin" };
+
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => { logout(); navigate("/login"); };
+  const visibleNavItems = user?.role === "admin" ? [...navItems, adminNavItem] : navItems;
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -38,7 +41,7 @@ export default function Layout() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-        {navItems.map(({ to, icon: Icon, label }) => (
+        {visibleNavItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
